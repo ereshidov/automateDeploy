@@ -34,7 +34,12 @@ jobs:
           cache: 'gradle'
       - name: Decode keystore file and put it to android/app
         run: |
-          cd android/app && echo ${{ secrets.KEYSTORE_FILE_BASE64 }} | base64 --decode >> my-upload-key.keystore
+          # create variables
+          KEYSTORE_PATH=./android/app
+
+          echo -n "$KEYSTORE_FILE_BASE64" | base64 --decode -o $KEYSTORE_PATH
+        env:
+          KEYSTORE_FILE_BASE64: ${{ secrets.KEYSTORE_FILE_BASE64 }}
       - name: Add keystore variables
         run: |
           echo AUTOMATE_DEPLOY_UPLOAD_STORE_FILE=$AUTOMATE_DEPLOY_UPLOAD_STORE_FILE >> ~/.gradle/gradle.properties
