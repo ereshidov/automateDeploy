@@ -21,7 +21,7 @@ jobs:
           custom_tag: v${{ github.run_number }}
       - name: Create release
         uses: ncipollo/release-action@v1
-          with:
-            generateReleaseNotes: true
-            tag: ${{ steps.tag_version.outputs.new_tag }}
-            name: Release ${{ steps.tag_version.outputs.new_tag }}
+        with:
+          generateReleaseNotes: true
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
