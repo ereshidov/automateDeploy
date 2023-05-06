@@ -32,5 +32,24 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
           cache: 'gradle'
+      - name: Decode keystore file and put it to android/app
+        run: |
+          # create variables
+          KEYSTORE_PATH=./android/app/my-upload-key.keystore
+
+          echo -n "$KEYSTORE_FILE_BASE64" | base64 --decode -o $KEYSTORE_PATH
+        env:
+          KEYSTORE_FILE_BASE64: ${{ secrets.KEYSTORE_FILE_BASE64 }}
+      - name: Add keystore variables
+        run: |
+          echo AUTOMATE_DEPLOY_UPLOAD_STORE_FILE=$AUTOMATE_DEPLOY_UPLOAD_STORE_FILE >> ~/.gradle/gradle.properties
+          echo AUTOMATE_DEPLOY_UPLOAD_KEY_ALIAS=$AUTOMATE_DEPLOY_UPLOAD_KEY_ALIAS >> ~/.gradle/gradle.properties
+          echo AUTOMATE_DEPLOY_UPLOAD_STORE_PASSWORD=$AUTOMATE_DEPLOY_UPLOAD_STORE_PASSWORD >> ~/.gradle/gradle.properties
+          echo AUTOMATE_DEPLOY_UPLOAD_KEY_PASSWORD=$AUTOMATE_DEPLOY_UPLOAD_KEY_PASSWORD >> ~/.gradle/gradle.properties
+        env:
+          AUTOMATE_DEPLOY_UPLOAD_STORE_FILE: ${{ secrets.AUTOMATE_DEPLOY_UPLOAD_STORE_FILE }}
+          AUTOMATE_DEPLOY_UPLOAD_KEY_ALIAS: ${{ secrets.AUTOMATE_DEPLOY_UPLOAD_KEY_ALIAS }}
+          AUTOMATE_DEPLOY_UPLOAD_STORE_PASSWORD: ${{ secrets.AUTOMATE_DEPLOY_UPLOAD_STORE_PASSWORD }}
+          AUTOMATE_DEPLOY_UPLOAD_KEY_PASSWORD: ${{ secrets.AUTOMATE_DEPLOY_UPLOAD_KEY_PASSWORD }}
       - name: Build .apk file
-        run: ./gradlew assembleRelease
+        run: cd android && ./gradlew assembleRelease
