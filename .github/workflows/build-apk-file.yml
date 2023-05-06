@@ -1,0 +1,36 @@
+name: Build .apk file
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: Github checkout
+        uses: actions/checkout@v3
+      - name: Set up Node js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 19
+      - name: Installing deps
+        uses: actions/cache@v3
+        id: node_modules
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}
+      - run: yarn install
+      - name: Set up ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.1
+          bundler-cache: true
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          cache: 'gradle'
+      - name: Build .apk file
+        run: ./gradlew assembleRelease
