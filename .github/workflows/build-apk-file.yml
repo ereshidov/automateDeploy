@@ -33,4 +33,4 @@ jobs:
           java-version: '11'
           cache: 'gradle'
       - name: Build .apk file
-        run: ./gradlew assembleRelease
+        run: cd android && ./gradlew assembleRelease
