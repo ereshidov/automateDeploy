@@ -1,0 +1,27 @@
+name: Create release
+
+on:
+  workflow_run:
+    workflows: ["Build .apk file"]
+    types:
+      - completed
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Github checkout
+        uses: actions/checkout@v3
+      - name: Create tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: v${{ github.run_number }}
+      - name: Create release
+        uses: ncipollo/release-action@v1
+          with:
+            generateReleaseNotes: true
+            tag: ${{ steps.tag_version.outputs.new_tag }}
+            name: Release ${{ steps.tag_version.outputs.new_tag }}
