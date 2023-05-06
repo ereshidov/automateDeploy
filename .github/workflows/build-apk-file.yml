@@ -35,7 +35,7 @@ jobs:
       - name: Decode keystore file and put it to android/app
         run: |
           # create variables
-          KEYSTORE_PATH=./android/app
+          KEYSTORE_PATH=./android/app/my-upload-key.keystore
 
           echo -n "$KEYSTORE_FILE_BASE64" | base64 --decode -o $KEYSTORE_PATH
         env:
